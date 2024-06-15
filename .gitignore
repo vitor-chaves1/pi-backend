@@ -1,0 +1,55 @@
+ Dependências
+/node_modules
+
+# Arquivo de ambiente
+.env
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Diretório de runtime
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Diretório de cobertura de testes
+/coverage
+
+# Arquivos de cache do npm
+.npm
+.npmrc
+
+# Arquivos de cache do editor
+*.swp
+*.swo
+*.sublime-project
+*.sublime-workspace
+.vscode/
+
+# Sistema de arquivos do OS X
+.DS_Store
+
+# Arquivos de compilação
+build/Release
+
+# Pasta de compilação do TypeScript
+dist
+
+# Arquivos de configuração do Yarn
+.yarn-integrity
+
+# Arquivos de banco de dados local
+*.dat
+*.dat.*
+
+# Pasta de saída do compilador do TypeScript
+tsc_output
+
+# Arquivos de log do Yarn
+yarn-error.log
+
+# Pasta de saída do compilador Babel
+babel_output

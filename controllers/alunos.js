@@ -23,13 +23,13 @@ async function listarAlunos(req, res) {
 }
 
 async function obterAluno(req, res) {
-    const id = new mongoose.Types.ObjectId(req.params.id);
+    const id = new mongoose.Types.ObjectId(req.params.alunoId);
     const aluno = await Aluno.findOne({ _id: id });
     res.json(aluno);
 }
 
 async function buscarAluno(req, res, next) {
-    const id = new mongoose.Types.ObjectId(req.params.id);
+    const id = new mongoose.Types.ObjectId(req.params.alunoId);
     const aluno = await Aluno.findOne({ _id: id });
     if (!aluno) {
         res.status(404).json({ msg: 'Aluno não encontrado' });
@@ -40,7 +40,7 @@ async function buscarAluno(req, res, next) {
 
 // Atualizar um aluno (protegendo o campo cursos)
 async function atualizarDadosAluno(req, res) {
-    const id = new mongoose.Types.ObjectId(req.params.id);
+    const id = new mongoose.Types.ObjectId(req.params.alunoId);
     if (req.body.cursos) {
         delete req.body.cursos
     }
@@ -50,7 +50,7 @@ async function atualizarDadosAluno(req, res) {
 
 // Adicionar um curso a um Aluno
 async function adicionarCursoAluno(req, res) {
-    const aluno = await Aluno.findById(req.params.id);
+    const aluno = await Aluno.findById(req.params.alunoId);
     const cursoId = new mongoose.Types.ObjectId(req.params.cursoId)
 
     //verifica se o aluno ja esta matriculado no curso
@@ -65,7 +65,7 @@ async function adicionarCursoAluno(req, res) {
 
 // remover um curso de um Aluno
 async function removerCursoAluno(req, res) {
-    const aluno = await Aluno.findById(req.params.id);
+    const aluno = await Aluno.findById(req.params.alunoId);
     const cursoId = new mongoose.Types.ObjectId(req.params.cursoId)
     const cursoIndex = aluno.cursos.indexOf(cursoId);
 
@@ -81,7 +81,7 @@ async function removerCursoAluno(req, res) {
 }
 
 async function removerAluno(req, res) {
-    const id = new mongoose.Types.ObjectId(req.params.id);
+    const id = new mongoose.Types.ObjectId(req.params.alunoId);
 
     //remover referencias
     await Curso.updateMany({ alunos: req.params.alunoId }, { $pull: { alunos: req.params.alunoId } });

@@ -24,6 +24,13 @@ Instale dependencias
   npm install
 ```
 
+Crie um arquivo .env com as informaçoes de conexao com o banco de dados [MongoDB Atlas](https://account.mongodb.com/account/login). Exemplo:
+
+```bash
+  MONGODB_URL=mongodb+srv://<usuario>:<senha>@<dados>.mongodb.net/
+  PORT = 3000
+```
+
 Inicie o servidor
 
 ```bash

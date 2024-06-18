@@ -1,0 +1,453 @@
+openapi: 3.0.0
+info:
+  title: API Sistema Acadêmico
+  description: |-
+    Essa API permite o registro e gerenciamento eficiente de alunos e cursos. Com uma estrutura flexível, ela suporta que
+     cada aluno seja associado a múltiplos cursos, enquanto cada curso pode acolher diversos alunos. Além disso, a API 
+     oferece funcionalidades CRUD (Criar, Ler, Atualizar e Deletar), possibilitando um controle completo sobre os dados
+      acadêmicos, garantindo assim uma administração ágil e simplificada de informações educacionais vitais.
+
+    - Vitor Chaves Araujo
+servers:
+  - url: http://localhost:3000/api-docs
+tags:
+  - name: Alunos
+  - name: Cursos
+paths:
+  /alunos:
+    post:
+      tags:
+        - Alunos
+      summary: Cadastra um novo aluno
+      description: id gerado automaticamente. necessário apenas nome. cursos serão cadastrados por meio de outra requisição
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlunoRequestBodyExample'
+      responses:
+        201:
+          description: Aluno cadastrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alunos'
+        422:
+          description: Dados do aluno inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+    get:
+      tags:
+        - Alunos
+      summary: Lista todos os alunos
+      responses:
+        200:
+          description: sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfAlunos'
+  /alunos/{alunoId}:
+    get:
+      tags:
+        - Alunos
+      summary: Obtem um aluno pelo id
+      parameters:
+        - name: alunoID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Aluno encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alunos'
+        404:
+          description: Aluno não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+    put:
+      tags:
+        - Alunos
+      summary: Altera dados do aluno
+      description: Não é possivel alterar os cursos do aluno usando esse caminho (Utilize PUT /alunos/{alunoId}/cursos/{cursoId})
+      parameters:
+        - name: alunoID
+          in: path
+          required: true
+          schema:
+            type: string
+          description: id do aluno
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AlunoRequestBodyExample'
+      responses:
+        200:
+          description: Aluno atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alunos'
+        404:
+          description: Aluno não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+        422:
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+    delete:
+      tags:
+        - Alunos
+      summary: Deleta o aluno pelo id
+      description: Também deleta todas as referências do aluno em cursos que estava registrado
+      parameters:
+        - name: alunoId
+          in: path
+          required: true
+          description: id do aluno
+          schema:
+            type: string
+      responses:
+        204:
+          description: Aluno deletado com sucesso
+        404:
+          description: Aluno não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+  /alunos/{alunoId}/cursos/{cursoId}:
+    put:
+      tags:
+        - Alunos
+      summary: Adiciona um curso ao aluno
+      description: Coloca o curso de id {cursoId} no array 'cursos' do aluno {alunoId}
+      parameters:
+        - name: alunoId
+          in: path
+          required: true
+          description: id do aluno
+          schema:
+            type: string
+        - name: cursoId
+          in: path
+          required: true
+          description: id do curso
+          schema:
+            type: string
+      responses:
+        200:
+          description: Curso adicionado ao aluno com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+        400:
+          description: O aluno já está matriculado neste curso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+    delete:
+      tags:
+        - Alunos
+      summary: Remove um curso ao aluno
+      description: Remove o curso de id {cursoId} do array 'cursos' do aluno {alunoId}
+      parameters:
+        - name: alunoId
+          in: path
+          required: true
+          description: id do aluno
+          schema:
+            type: string
+        - name: cursoId
+          in: path
+          required: true
+          description: id do curso
+          schema:
+            type: string
+      responses:
+        200:
+          description: Curso removido ao aluno com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+        400:
+          description: O aluno não está matriculado neste curso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+        404:
+          description: Aluno ou curso não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+  /cursos:
+    post:
+      tags:
+        - Cursos
+      summary: Cadastra um novo curso
+      description: id gerado automaticamente. necessário apenas nome. Alunos serão inseridos por meio de outra requisição
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CursoRequestBodyExample'
+      responses:
+        201:
+          description: Curso cadastrado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cursos'
+        422:
+          description: Dados do aluno inválidos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+    get:
+      tags:
+        - Cursos
+      summary: Lista todos os cursos
+      responses:
+        200:
+          description: sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfCursos'
+  /cursos/{cursoId}:
+    get:
+      tags:
+        - Cursos
+      summary: Obtem um curso pelo id
+      parameters:
+        - name: cursoID
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: Curso encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Cursos'
+        404:
+          description: Curso não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+    put:
+      tags:
+        - Cursos
+      summary: Altera dados do curso
+      description: Não é possivel alterar a lista de alunos do curso usando esse caminho (Utilize PUT /cursos/{cursoId}/alunos/{alunoId})
+      parameters:
+        - name: cursoID
+          in: path
+          required: true
+          schema:
+            type: string
+          description: id do curso
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CursoRequestBodyExample'
+      responses:
+        200:
+          description: Curso atualizado com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Alunos'
+        404:
+          description: Curso não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+        422:
+          description: Erro de validação
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+    delete:
+      tags:
+        - Cursos
+      summary: Deleta o curso pelo id
+      description: Também deleta todas as referências do curso em alunos que o possuiam.
+      parameters:
+        - name: cursoId
+          in: path
+          required: true
+          description: id do curso
+          schema:
+            type: string
+      responses:
+        204:
+          description: Curso deletado com sucesso
+        404:
+          description: Curso não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+  /cursos/{cursoId}/alunos/{alunoId}:
+    put:
+      tags:
+        - Cursos
+      summary: Adiciona um aluno ao curso
+      description: Coloca o aluno de id {alunoId} no array 'aluno' do curso {cursoId}. (Também atribui o curso ao aluno automaticamente)
+      parameters:
+        - name: alunoId
+          in: path
+          required: true
+          description: id do aluno
+          schema:
+            type: string
+        - name: cursoId
+          in: path
+          required: true
+          description: id do curso
+          schema:
+            type: string
+      responses:
+        200:
+          description: Aluno adicionado ao curso com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+        400:
+          description: O curso já possui esse aluno matriculado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+    delete:
+      tags:
+        - Cursos
+      summary: Remove um aluno do curso
+      description: Remove o aluno de id {cursoId} do array 'alunos' do curso {alunoId}. (Também remove o curso do aluno automaticamente)
+      parameters:
+        - name: alunoId
+          in: path
+          required: true
+          description: id do aluno
+          schema:
+            type: string
+        - name: cursoId
+          in: path
+          required: true
+          description: id do curso
+          schema:
+            type: string
+      responses:
+        200:
+          description: Aluno removido do curso com sucesso
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+        400:
+          description: O curso não possui esse aluno
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+        404:
+          description: Aluno ou curso não encontrado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Mensagem'
+components:
+  schemas:
+    Alunos:
+      type: object
+      properties:
+        _id:
+          type: string
+        nome:
+          type: string
+          required: true
+        email:
+          type: string
+        telefone:
+          type: string
+        cursos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Cursos'
+    Cursos:
+      type: object
+      properties:
+        _id:
+          type: string
+        nome:
+          type: string
+          required: true
+        alunos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Alunos'
+    ArrayOfAlunos:
+      type: array
+      items:
+        $ref: '#/components/schemas/Alunos'
+    ArrayOfCursos:
+      type: array
+      items:
+        $ref: '#/components/schemas/Cursos'
+    Mensagem:
+      type: object
+      properties:
+        msg:
+          type: string
+    AlunoRequestBodyExample:
+      type: object
+      properties:
+        nome:
+          type: string
+          required: true
+          example: "Vitor"
+        email:
+          type: string
+          example: "vitor@email.com"
+        telefone:
+          type: string
+          example: "12312-3123"
+    CursoRequestBodyExample:
+      type: object
+      properties:
+        nome:
+          type: string
+          required: true
+          example: "Curso 1"

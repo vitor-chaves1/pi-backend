@@ -52,10 +52,13 @@ async function atualizarCurso(req, res) {
 async function adicionarAlunoCurso(req, res) {
     const curso = await Curso.findById(req.params.cursoId);
     const alunoId = req.params.alunoId;
+    const aluno = await Aluno.findById(alunoId)
 
     if (curso.alunos.indexOf(alunoId) === -1) {
         curso.alunos.push(alunoId);
         await curso.save();
+        aluno.cursos.push(curso._id);
+        await aluno.save();
         res.status(200).json({ mensagem: "Aluno adicionado ao curso com sucesso" });
     } else {
         res.status(400).json({ mensagem: "O aluno já está matriculado neste curso" });
@@ -65,11 +68,22 @@ async function adicionarAlunoCurso(req, res) {
 async function removerAlunoCurso(req, res) {
     const curso = await Curso.findById(req.params.cursoId);
     const alunoId = req.params.alunoId;
+    const aluno = await Aluno.findById(alunoId);
 
     const alunoIndex = curso.alunos.indexOf(alunoId);
-    if (alunoIndex > -1) {
+    const cursoIndex = aluno.cursos.indexOf(curso._id);
+
+    if (!aluno || !curso) {
+        return res.status(404).json({ mensagem: "Aluno ou Curso não encontrado" });
+    }
+
+    if (alunoIndex > -1 && cursoIndex > -1) {
         curso.alunos.splice(alunoIndex, 1);
         await curso.save();
+
+        aluno.cursos.splice(cursoIndex, 1);
+        await aluno.save();
+
         res.status(200).json({ mensagem: "Aluno removido do curso com sucesso" });
     } else {
         res.status(400).json({ mensagem: "O aluno não está matriculado neste curso" });

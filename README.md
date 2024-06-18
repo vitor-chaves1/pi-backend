@@ -9,7 +9,7 @@ Essa API permite o registro e gerenciamento eficiente de alunos e cursos. Com um
 Clone o projeto
 
 ```bash
-  git clone https://https://github.com/vitor-chaves1/pi-backend/
+  git clone https://github.com/vitor-chaves1/pi-backend/
 ```
 
 Acesse o diretório do projeto
